@@ -34,10 +34,15 @@ func ProcessEvent(ctx context.Context, m *pubsub.Message) error {
 		return err
 	}
 
+	parsedTimestamp, err := time.Parse(time.RFC3339, e.Timestamp)
+	if err != nil {
+		log.Printf("Timestamp parse error: %v", err)
+		return err
+	}
 	pe := ProcessedEvent{
 		UserID:      e.UserID,
 		EventType:   e.EventType,
-		Timestamp:   time.Time{}, // Parse e.Timestamp
+		Timestamp:   parsedTimestamp,
 		Page:        e.Page,
 		ProcessedAt: time.Now(),
 		Country:     "US", // Mock enrichment
